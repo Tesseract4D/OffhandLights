@@ -3,7 +3,7 @@
 	"modList": [{
 		"modid": "${modId}",
 		"name": "${modName}",
-		"description": "Make Optifine Dynamic Lights Available for Battlegear Offhand.",
+		"description": "Make Dynamic Lights Available for Offhand.",
 		"version": "${modVersion}",
 		"mcversion": "${minecraftVersion}",
 		"url": "https://github.com/tesseract4d",
