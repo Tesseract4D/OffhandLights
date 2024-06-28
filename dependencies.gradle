@@ -35,9 +35,12 @@
  */
 dependencies {
     runtimeOnlyNonPublishable("com.github.GTNewHorizons:NotEnoughItems:2.5.4-GTNH:dev")
-    implementation "maven.modrinth:mysteriumlibunofficial:1.3"
+    implementation files("libs/+MysteriumLib-1.5.2.jar")
+    //implementation files("libs/SmoothEntityLight-3.0.5-LE.jar")
+    //implementation files("libs/battlegear2-1.3.8.jar")
+    //implementation "curse.maven:smooth-entity-light-341845:2788837"
     implementation "maven.modrinth:unimixins:1.7.10-0.1.17"
     implementation "maven.modrinth:gtnhlib:0.2.11"
-    implementation "maven.modrinth:angelica:1.0.0-alpha51"
-    implementation "maven.modrinth:backhand:1.4.0"
+    compileOnly "maven.modrinth:angelica:1.0.0-alpha51"
+    implementation "maven.modrinth:backhand:1.4.1"
 }

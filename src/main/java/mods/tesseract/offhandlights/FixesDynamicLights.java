@@ -3,8 +3,6 @@ package mods.tesseract.offhandlights;
 import com.gtnewhorizons.angelica.dynamiclights.DynamicLights;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityTNTPrimed;
-import net.minecraft.entity.monster.EntityBlaze;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -27,7 +25,7 @@ public class FixesDynamicLights {
             n = Class.forName("mods.battlegear2.api.core.InventoryPlayerBattle").getMethod("getCurrentOffhandWeapon");
         } catch (Exception e) {
             try {
-                n = Class.forName("mods.battlegear2.api.core.InventoryPlayerBattle").getMethod("getOffhandItem");
+                n = Class.forName("xonin.backhand.api.core.InventoryPlayerBackhand").getMethod("getOffhandItem");
             } catch (Exception f) {
                 try {
                     n = Class.forName("mods.battlegear2.api.core.IInventoryPlayerBattle").getMethod("battlegear2$getCurrentOffhandWeapon");
@@ -49,7 +47,7 @@ public class FixesDynamicLights {
 
     public static int optifine(Object a, Entity e) throws Exception {
         EntityPlayer f = (EntityPlayer) e;
-        return Math.max(getLightLevel((ItemStack) n.invoke(f.inventory)), Math.max(getLightLevel(f.getHeldItem()), getLightLevel(f.getCurrentArmor(3))));
+        return Math.max(getLightLevel((ItemStack) n.invoke(f.inventory)), Math.max(getLightLevel(f.getHeldItem()), getLightLevel(f.getEquipmentInSlot(4))));
     }
 
     public static int angelica(DynamicLights c, Entity e) throws Exception {
