@@ -1,6 +1,7 @@
 package mods.tesseract.offhandlights;
 
 import com.gtnewhorizons.angelica.dynamiclights.DynamicLights;
+import cpw.mods.fml.common.Loader;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityCreeper;
@@ -14,25 +15,24 @@ import java.lang.reflect.Method;
 import static com.gtnewhorizons.angelica.dynamiclights.DynamicLights.getLuminanceFromItemStack;
 
 public class FixesDynamicLights {
-    public static Method m, n;
+    public static Method m;
+
+    public static byte modState;
 
     static {
         try {
             m = Class.forName("DynamicLights").getDeclaredMethod("getLightLevel", ItemStack.class);
         } catch (Exception ignored) {
         }
-        try {
-            n = Class.forName("mods.battlegear2.api.core.InventoryPlayerBattle").getMethod("getCurrentOffhandWeapon");
-        } catch (Exception e) {
+        if (Loader.isModLoaded("battlegear2")) {
             try {
-                n = Class.forName("xonin.backhand.api.core.InventoryPlayerBackhand").getMethod("getOffhandItem");
+                Class.forName("mods.battlegear2.api.core.InventoryPlayerBattle");
+                modState = 0;
             } catch (Exception f) {
-                try {
-                    n = Class.forName("mods.battlegear2.api.core.IInventoryPlayerBattle").getMethod("battlegear2$getCurrentOffhandWeapon");
-                } catch (Exception ignored) {
-                }
+                modState = 1;
             }
-        }
+        } else if (Loader.isModLoaded("backhand"))
+            modState = 2;
     }
 
     @Fix(returnSetting = EnumReturnSetting.ON_TRUE, anotherMethodReturned = "optifine", targetClass = "DynamicLights")
@@ -47,10 +47,10 @@ public class FixesDynamicLights {
 
     public static int optifine(Object a, Entity e) throws Exception {
         EntityPlayer f = (EntityPlayer) e;
-        return Math.max(getLightLevel((ItemStack) n.invoke(f.inventory)), Math.max(getLightLevel(f.getHeldItem()), getLightLevel(f.getEquipmentInSlot(4))));
+        return Math.max(getLightLevel(getOffhandItem(f)), Math.max(getLightLevel(f.getHeldItem()), getLightLevel(f.getEquipmentInSlot(4))));
     }
 
-    public static int angelica(DynamicLights c, Entity e) throws Exception {
+    public static int angelica(DynamicLights c, Entity e) {
         EntityLivingBase f = (EntityLivingBase) e;
         if (f.isBurning())
             return 15;
@@ -58,7 +58,7 @@ public class FixesDynamicLights {
         boolean w = e.isInWater();
         ItemStack k;
         if (f instanceof EntityPlayer g) {
-            if ((k = (ItemStack) n.invoke(g.inventory)) != null)
+            if ((k = getOffhandItem(g)) != null)
                 l = getLuminanceFromItemStack(k, w);
         } else if (f instanceof EntityCreeper h && h.timeSinceIgnited != 0)
             return Math.min(15, h.timeSinceIgnited);
@@ -68,6 +68,16 @@ public class FixesDynamicLights {
             }
         }
         return l;
+    }
+
+    public static ItemStack getOffhandItem(EntityPlayer p) {
+        return switch (modState) {
+            case 0 -> ((mods.battlegear2.api.core.InventoryPlayerBattle) p.inventory).getCurrentOffhandWeapon();
+            case 1 ->
+                ((mods.battlegear2.api.core.IInventoryPlayerBattle) p.inventory).battlegear2$getCurrentOffhandWeapon();
+            case 2 -> xonin.backhand.api.core.BackhandUtils.getOffhandItem(p);
+            default -> null;
+        };
     }
 
     public static int getLightLevel(ItemStack k) throws Exception {
