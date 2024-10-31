@@ -3,12 +3,11 @@ package mods.tesseract.offhandlights;
 import com.gtnewhorizons.angelica.dynamiclights.DynamicLights;
 import cpw.mods.fml.common.Loader;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.tclproject.mysteriumlib.asm.annotations.EnumReturnSetting;
 import net.tclproject.mysteriumlib.asm.annotations.Fix;
+import net.tclproject.mysteriumlib.asm.annotations.ReturnedValue;
 
 import java.lang.reflect.Method;
 
@@ -35,37 +34,19 @@ public class FixesDynamicLights {
             modState = 2;
     }
 
-    @Fix(returnSetting = EnumReturnSetting.ON_TRUE, anotherMethodReturned = "optifine", targetClass = "DynamicLights")
-    public static boolean getLightLevel(Object a, Entity e) {
-        return e instanceof EntityPlayer;
+    @Fix(insertOnExit = true, returnSetting = EnumReturnSetting.ALWAYS, targetClass = "DynamicLights")
+    public static int getLightLevel(Object a, Entity e, @ReturnedValue int l) throws Exception {
+        if (e instanceof EntityPlayer p)
+            return Math.max(getLightLevel(getOffhandItem(p)), l);
+        return l;
     }
 
-    @Fix(returnSetting = EnumReturnSetting.ON_TRUE, anotherMethodReturned = "angelica")
-    public static boolean getLuminanceFromEntity(DynamicLights c, Entity e) {
-        return e instanceof EntityLivingBase;
-    }
-
-    public static int optifine(Object a, Entity e) throws Exception {
-        EntityPlayer f = (EntityPlayer) e;
-        return Math.max(getLightLevel(getOffhandItem(f)), Math.max(getLightLevel(f.getHeldItem()), getLightLevel(f.getEquipmentInSlot(4))));
-    }
-
-    public static int angelica(DynamicLights c, Entity e) {
-        EntityLivingBase f = (EntityLivingBase) e;
-        if (f.isBurning())
-            return 15;
-        int l = 0;
-        boolean w = e.isInWater();
-        ItemStack k;
-        if (f instanceof EntityPlayer g) {
-            if ((k = getOffhandItem(g)) != null)
-                l = getLuminanceFromItemStack(k, w);
-        } else if (f instanceof EntityCreeper h && h.timeSinceIgnited != 0)
-            return Math.min(15, h.timeSinceIgnited);
-        for (int i = 0; i < 5; i++) {
-            if ((k = f.getEquipmentInSlot(i)) != null) {
-                l = Math.max(l, getLuminanceFromItemStack(k, w));
-            }
+    @Fix(insertOnExit = true, returnSetting = EnumReturnSetting.ALWAYS, anotherMethodReturned = "angelica")
+    public static int getLuminanceFromEntity(DynamicLights c, Entity e, @ReturnedValue int l) {
+        if (e instanceof EntityPlayer g) {
+            ItemStack k = getOffhandItem(g);
+            if (k != null)
+                return Math.max(l, getLuminanceFromItemStack(k, e.isInWater()));
         }
         return l;
     }
