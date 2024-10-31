@@ -35,18 +35,11 @@
  */
 dependencies {
     runtimeOnlyNonPublishable("com.github.GTNewHorizons:NotEnoughItems:2.5.4-GTNH:dev")
-    implementation "maven.modrinth:mysteriumlibunofficial:1.5.4"
-    //implementation files("libs/SmoothEntityLight-3.0.5-LE.jar")
     compileOnly files("libs/battlegear2-1.3.8.jar")
     compileOnly "curse.maven:mb-battlegear-2-59710:2286765"
-    implementation files("libs/+MysteriumLib-1.5.4.jar")
-    //implementation files("libs/backhand-1.5.0.jar")
-    //compileOnly "curse.maven:smooth-entity-light-341845:2788837"
-    implementation "curse.maven:dynamic-lights-227874:5404435"
-    compileOnly "maven.modrinth:backhand:1.4.1"
-    implementation "maven.modrinth:unimixins:1.7.10-0.1.17"
-    implementation "maven.modrinth:gtnhlib:0.2.11"
-    compileOnly "maven.modrinth:angelica:1.0.0-alpha52"
-    //implementation "curse.maven:dynamic-lights-227874:5404435"
-    //implementation "maven.modrinth:backhand:1.4.1"
+    implementation "maven.modrinth:myceliumlib:1.5.10-1.7.10"
+    implementation files("libs/backhand-1.5.14.jar")
+    implementation "maven.modrinth:unimixins:1.7.10-0.1.19"
+    implementation "maven.modrinth:gtnhlib:0.5.18"
+    implementation "maven.modrinth:angelica:1.0.0-beta14"
 }
