@@ -41,7 +41,7 @@ public class FixesDynamicLights {
         return l;
     }
 
-    @Fix(insertOnExit = true, returnSetting = EnumReturnSetting.ALWAYS, anotherMethodReturned = "angelica")
+    @Fix(insertOnExit = true, returnSetting = EnumReturnSetting.ALWAYS)
     public static int getLuminanceFromEntity(DynamicLights c, Entity e, @ReturnedValue int l) {
         if (e instanceof EntityPlayer g) {
             ItemStack k = getOffhandItem(g);
