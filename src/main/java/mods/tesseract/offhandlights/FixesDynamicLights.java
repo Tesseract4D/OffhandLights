@@ -1,5 +1,6 @@
 package mods.tesseract.offhandlights;
 
+import com.falsepattern.rple.internal.client.optifine.ColorDynamicLights;
 import com.gtnewhorizons.angelica.dynamiclights.DynamicLights;
 import cpw.mods.fml.common.Loader;
 import net.minecraft.entity.Entity;
@@ -10,8 +11,6 @@ import net.tclproject.mysteriumlib.asm.annotations.Fix;
 import net.tclproject.mysteriumlib.asm.annotations.ReturnedValue;
 
 import java.lang.reflect.Method;
-
-import static com.gtnewhorizons.angelica.dynamiclights.DynamicLights.getLuminanceFromItemStack;
 
 public class FixesDynamicLights {
     public static Method m;
@@ -42,11 +41,21 @@ public class FixesDynamicLights {
     }
 
     @Fix(insertOnExit = true, returnSetting = EnumReturnSetting.ALWAYS)
+    public static short getLightLevel(ColorDynamicLights a, Entity e, @ReturnedValue short l) {
+        if (e instanceof EntityPlayer p) {
+            short d = ColorDynamicLights.getLightLevel(getOffhandItem(p));
+            if (d > l)
+                return d;
+        }
+        return l;
+    }
+
+    @Fix(insertOnExit = true, returnSetting = EnumReturnSetting.ALWAYS)
     public static int getLuminanceFromEntity(DynamicLights c, Entity e, @ReturnedValue int l) {
-        if (e instanceof EntityPlayer g) {
+        if (modState != 2 && e instanceof EntityPlayer g) {
             ItemStack k = getOffhandItem(g);
             if (k != null)
-                return Math.max(l, getLuminanceFromItemStack(k, e.isInWater()));
+                return Math.max(l, DynamicLights.getLuminanceFromItemStack(k, e.isInWater()));
         }
         return l;
     }

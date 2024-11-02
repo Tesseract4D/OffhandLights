@@ -1,5 +1,6 @@
 package mods.tesseract.offhandlights;
 
+import com.falsepattern.rple.internal.client.optifine.ColorDynamicLights;
 import cpw.mods.fml.common.Mod;
 import net.tclproject.mysteriumlib.asm.common.CustomLoadingPlugin;
 import net.tclproject.mysteriumlib.asm.common.FirstClassTransformer;
