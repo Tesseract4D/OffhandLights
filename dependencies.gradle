@@ -47,4 +47,5 @@ dependencies {
     implementation "maven.modrinth:chunkapi:0.5.1"
     implementation files("libs/rple-mc1.7.10-1.0.1-beta0003-dev.jar")
     compileOnly files("libs/angelica-1.0.0-beta16-dev.jar")
+    compileOnly files("libs/falsetweaks-mc1.7.10-3.3.2.jar")
 }

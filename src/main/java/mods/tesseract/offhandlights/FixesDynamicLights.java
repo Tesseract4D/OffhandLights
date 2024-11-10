@@ -41,6 +41,13 @@ public class FixesDynamicLights {
     }
 
     @Fix(insertOnExit = true, returnSetting = EnumReturnSetting.ALWAYS)
+    public static int getLightLevel(com.falsepattern.falsetweaks.modules.dynlights.base.DynamicLights a, Entity e, @ReturnedValue int l) throws Exception {
+        if (e instanceof EntityPlayer p)
+            return Math.max(a.getLightLevel(getOffhandItem(p)), l);
+        return l;
+    }
+
+    @Fix(insertOnExit = true, returnSetting = EnumReturnSetting.ALWAYS)
     public static short getLightLevel(ColorDynamicLights a, Entity e, @ReturnedValue short l) {
         if (e instanceof EntityPlayer p) {
             short d = ColorDynamicLights.getLightLevel(getOffhandItem(p));
