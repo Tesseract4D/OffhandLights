@@ -1,6 +1,6 @@
 package mods.tesseract.offhandlights;
 
-import com.falsepattern.rple.internal.client.optifine.ColorDynamicLights;
+import com.falsepattern.rple.internal.client.dynlights.ColorDynamicLights;
 import com.gtnewhorizons.angelica.dynamiclights.DynamicLights;
 import cpw.mods.fml.common.Loader;
 import net.minecraft.entity.Entity;
@@ -15,7 +15,7 @@ import java.lang.reflect.Method;
 public class FixesDynamicLights {
     public static Method m;
 
-    public static byte modState;
+    public static int modState = -1;
 
     static {
         try {
@@ -43,16 +43,14 @@ public class FixesDynamicLights {
     @Fix(insertOnExit = true, returnSetting = EnumReturnSetting.ALWAYS)
     public static int getLightLevel(com.falsepattern.falsetweaks.modules.dynlights.base.DynamicLights a, Entity e, @ReturnedValue int l) throws Exception {
         if (e instanceof EntityPlayer p)
-            return Math.max(a.getLightLevel(getOffhandItem(p)), l);
+            return Math.max(com.falsepattern.falsetweaks.modules.dynlights.base.DynamicLights.getLightLevel(getOffhandItem(p)), l);
         return l;
     }
 
     @Fix(insertOnExit = true, returnSetting = EnumReturnSetting.ALWAYS)
     public static short getLightLevel(ColorDynamicLights a, Entity e, @ReturnedValue short l) {
-        if (e instanceof EntityPlayer p) {
-            short d = ColorDynamicLights.getLightLevel(getOffhandItem(p));
-            if (d > l)
-                return d;
+        if (l == 0 && e instanceof EntityPlayer p) {
+            return ColorDynamicLights.getLightLevel(getOffhandItem(p));
         }
         return l;
     }

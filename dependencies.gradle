@@ -45,7 +45,7 @@ dependencies {
     implementation "maven.modrinth:fplib:1.4.3"
     implementation "maven.modrinth:lumi1710:1.0.0"
     implementation "maven.modrinth:chunkapi:0.5.1"
-    implementation files("libs/rple-mc1.7.10-1.0.1-beta0003-dev.jar")
+    implementation files("libs/rple-mc1.7.10-1.3.3.jar")
     compileOnly files("libs/angelica-1.0.0-beta16-dev.jar")
-    compileOnly files("libs/falsetweaks-mc1.7.10-3.3.2.jar")
+    compileOnly files("libs/falsetweaks-mc1.7.10-3.4.3.jar")
 }
