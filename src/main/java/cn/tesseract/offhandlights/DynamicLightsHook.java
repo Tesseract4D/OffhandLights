@@ -1,18 +1,17 @@
-package mods.tesseract.offhandlights;
+package cn.tesseract.offhandlights;
 
+import cn.tesseract.mycelium.asm.Hook;
+import cn.tesseract.mycelium.asm.ReturnCondition;
 import com.falsepattern.rple.internal.client.dynlights.ColorDynamicLights;
 import com.gtnewhorizons.angelica.dynamiclights.DynamicLights;
 import cpw.mods.fml.common.Loader;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.tclproject.mysteriumlib.asm.annotations.EnumReturnSetting;
-import net.tclproject.mysteriumlib.asm.annotations.Fix;
-import net.tclproject.mysteriumlib.asm.annotations.ReturnedValue;
 
 import java.lang.reflect.Method;
 
-public class FixesDynamicLights {
+public class DynamicLightsHook {
     public static Method m;
 
     public static int modState = -1;
@@ -33,30 +32,30 @@ public class FixesDynamicLights {
             modState = 2;
     }
 
-    @Fix(insertOnExit = true, returnSetting = EnumReturnSetting.ALWAYS, targetClass = "DynamicLights")
-    public static int getLightLevel(Object a, Entity e, @ReturnedValue int l) throws Exception {
+    @Hook(injectOnExit = true, returnCondition = ReturnCondition.ALWAYS, targetClass = "DynamicLights")
+    public static int getLightLevel(Object a, Entity e, @Hook.ReturnValue int l) throws Exception {
         if (e instanceof EntityPlayer p)
             return Math.max(getLightLevel(getOffhandItem(p)), l);
         return l;
     }
 
-    @Fix(insertOnExit = true, returnSetting = EnumReturnSetting.ALWAYS)
-    public static int getLightLevel(com.falsepattern.falsetweaks.modules.dynlights.base.DynamicLights a, Entity e, @ReturnedValue int l) throws Exception {
+    @Hook(injectOnExit = true, returnCondition = ReturnCondition.ALWAYS)
+    public static int getLightLevel(com.falsepattern.falsetweaks.modules.dynlights.base.DynamicLights a, Entity e, @Hook.ReturnValue int l) {
         if (e instanceof EntityPlayer p)
             return Math.max(com.falsepattern.falsetweaks.modules.dynlights.base.DynamicLights.getLightLevel(getOffhandItem(p)), l);
         return l;
     }
 
-    @Fix(insertOnExit = true, returnSetting = EnumReturnSetting.ALWAYS)
-    public static short getLightLevel(ColorDynamicLights a, Entity e, @ReturnedValue short l) {
+    @Hook(injectOnExit = true, returnCondition = ReturnCondition.ALWAYS)
+    public static short getLightLevel(ColorDynamicLights a, Entity e, @Hook.ReturnValue short l) {
         if (l == 0 && e instanceof EntityPlayer p) {
             return ColorDynamicLights.getLightLevel(getOffhandItem(p));
         }
         return l;
     }
 
-    @Fix(insertOnExit = true, returnSetting = EnumReturnSetting.ALWAYS)
-    public static int getLuminanceFromEntity(DynamicLights c, Entity e, @ReturnedValue int l) {
+    @Hook(injectOnExit = true, returnCondition = ReturnCondition.ALWAYS)
+    public static int getLuminanceFromEntity(DynamicLights c, Entity e, @Hook.ReturnValue int l) {
         if (modState != 2 && e instanceof EntityPlayer g) {
             ItemStack k = getOffhandItem(g);
             if (k != null)
