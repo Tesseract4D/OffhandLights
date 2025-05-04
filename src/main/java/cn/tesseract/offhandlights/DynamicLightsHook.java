@@ -12,13 +12,13 @@ import net.minecraft.item.ItemStack;
 import java.lang.reflect.Method;
 
 public class DynamicLightsHook {
-    public static Method m;
+    public static Method optifineLightLevel;
 
     public static int modState = -1;
 
     static {
         try {
-            m = Class.forName("DynamicLights").getDeclaredMethod("getLightLevel", ItemStack.class);
+            optifineLightLevel = Class.forName("DynamicLights").getDeclaredMethod("getLightLevel", ItemStack.class);
         } catch (Exception ignored) {
         }
         if (Loader.isModLoaded("battlegear2")) {
@@ -32,21 +32,21 @@ public class DynamicLightsHook {
             modState = 2;
     }
 
-    @Hook(injectOnExit = true, returnCondition = ReturnCondition.ALWAYS, targetClass = "DynamicLights")
+    @Hook(injector = "exit", returnCondition = ReturnCondition.ALWAYS, targetClass = "DynamicLights")
     public static int getLightLevel(Object a, Entity e, @Hook.ReturnValue int l) throws Exception {
         if (e instanceof EntityPlayer p)
             return Math.max(getLightLevel(getOffhandItem(p)), l);
         return l;
     }
 
-    @Hook(injectOnExit = true, returnCondition = ReturnCondition.ALWAYS)
+    @Hook(injector = "exit", returnCondition = ReturnCondition.ALWAYS)
     public static int getLightLevel(com.falsepattern.falsetweaks.modules.dynlights.base.DynamicLights a, Entity e, @Hook.ReturnValue int l) {
         if (e instanceof EntityPlayer p)
             return Math.max(com.falsepattern.falsetweaks.modules.dynlights.base.DynamicLights.getLightLevel(getOffhandItem(p)), l);
         return l;
     }
 
-    @Hook(injectOnExit = true, returnCondition = ReturnCondition.ALWAYS)
+    @Hook(injector = "exit", returnCondition = ReturnCondition.ALWAYS)
     public static short getLightLevel(ColorDynamicLights a, Entity e, @Hook.ReturnValue short l) {
         if (l == 0 && e instanceof EntityPlayer p) {
             return ColorDynamicLights.getLightLevel(getOffhandItem(p));
@@ -54,7 +54,7 @@ public class DynamicLightsHook {
         return l;
     }
 
-    @Hook(injectOnExit = true, returnCondition = ReturnCondition.ALWAYS)
+    @Hook(injector = "exit", returnCondition = ReturnCondition.ALWAYS)
     public static int getLuminanceFromEntity(DynamicLights c, Entity e, @Hook.ReturnValue int l) {
         if (modState != 2 && e instanceof EntityPlayer g) {
             ItemStack k = getOffhandItem(g);
@@ -68,13 +68,13 @@ public class DynamicLightsHook {
         return switch (modState) {
             case 0 -> ((mods.battlegear2.api.core.InventoryPlayerBattle) p.inventory).getCurrentOffhandWeapon();
             case 1 ->
-                ((mods.battlegear2.api.core.IInventoryPlayerBattle) p.inventory).battlegear2$getCurrentOffhandWeapon();
+                    ((mods.battlegear2.api.core.IInventoryPlayerBattle) p.inventory).battlegear2$getCurrentOffhandWeapon();
             case 2 -> xonin.backhand.api.core.BackhandUtils.getOffhandItem(p);
             default -> null;
         };
     }
 
     public static int getLightLevel(ItemStack k) throws Exception {
-        return (int) m.invoke(null, k);
+        return (int) optifineLightLevel.invoke(null, k);
     }
 }
